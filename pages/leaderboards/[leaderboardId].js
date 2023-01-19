@@ -7,21 +7,19 @@ import {
   PanelLayout,
   ThreeColumnLayout,
   WalletProviderPopUp,
+  UserIcon
 } from "../../components";
 import { useRelay } from "../../context/RelayContext";
 import TuningPanel from "../../components/TuningPanel";
 import { useBitcoin } from "../../context/BitcoinContext";
 import { useHaste } from '../../hooks/useHaste'
 import { useRouter } from 'next/router'
-import { useAPI } from '../../hooks/useAPI'
+import { useAPI } from "../../hooks/useAPI";
 
 import axios from 'axios'
+import { userProfileCardAnonQuery } from "../../services";
 
-function getRandomInt(max) {
-    return Math.floor(Math.random() * max);
-  }
-
-export default function PlayGame() {
+export default function Settings() {
   const { theme, setTheme } = useTheme();
   const { logout: logoutHaste } = useHaste();
   const [isDark, setIsDark] = useState(theme === "dark");
@@ -33,25 +31,20 @@ export default function PlayGame() {
 
   const [leaderboards, setLeaderboards] = useState()
 
-  const [leaderboard, setLeaderboard] = useState()
-
-  const { data, loading } = useAPI(`/plays/${router.query.play_id}`)
-
-  const play = data?.play
-
-    console.log("--play--", play)
 
   function leaderboardSelected({leaderboard: leaderboard_id}) {
 
     console.log('haste.leaderboardSelected', {leaderboard_id})
 
-    setLeaderboard(leaderboard_id)
+    router.push(`/leaderboards/${leaderboard_id}`)
 
   }
 
   const authenticated = tokenDetails?.isAuthenticated
 
-  async function donePlaying() {
+  const {leaderboardId} = router.query
+
+  async function playNow() {
     console.log('play now clicked')
 
     if (!authenticated) {
@@ -59,19 +52,19 @@ export default function PlayGame() {
       return
     }
 
-    //const { data } = await axios.post(`http://localhost:5200/api/v1/haste/scores`, {
-    const { data } = await axios.post(`https://fluttergame.fun/api/v1/haste/scores`, {
-      leaderboard_id: play?.leaderboardId,
-      handcash_token: tokenDetails.token,
-      play: play.data,
-      score: getRandomInt(1000)
+    const { data } = await axios.post(`https://fluttergame.fun/api/v1/haste/plays`, {
+    //const { data } = await axios.post(`http://localhost:5200/api/v1/haste/plays`, {
+      leaderboard_id: leaderboard,
+      handcash_token: tokenDetails.token
     })
 
-    console.log('haste.score.recorded', data)
+    console.log('haste.play.created', data)
 
-    router.push(`/leaderboards/${play.leaderboardId}`)
+    router.push(`/plays/${data.play.id}`)
 
   }
+
+
 
   function logout() {
     console.log('logout clicked')
@@ -96,32 +89,58 @@ export default function PlayGame() {
     }
   };
 
-  if (loading) {
-    return (
-      <PanelLayout>
-        <div className="mx-auto max-w-xl col-span-12 lg:col-span-6 min-h-screen flex flex-col ">
-          <div className="mt-7  p-4  ">
-            <div className="bg-gray-100 dark:bg-gray-600 p-5 flex flex-col cursor-pointer my-4 rounded-lg">
+  const { data, loading } = useAPI(`/haste/leaderboards/${leaderboardId}`)
 
-              <p>Loading...</p>
+  if (!data || loading) {
 
-            </div>
-          </div>
+    return     <PanelLayout>
+    <div className="mx-auto max-w-xl col-span-12 lg:col-span-6 min-h-screen flex flex-col ">
+      <div className="mt-7  p-4  ">
+        <div className="bg-gray-100 dark:bg-gray-600 p-5 flex flex-col cursor-pointer my-4 rounded-lg">
+            <div>Loading...</div>
         </div>
-      </PanelLayout>
-    )
+      </div>
+      
+
+    </div>
+    </PanelLayout>
+
   }
+
+  const { leaders, leaderboard } = data
 
   return (
     <PanelLayout>
       <div className="mx-auto max-w-xl col-span-12 lg:col-span-6 min-h-screen flex flex-col ">
         <div className="mt-7  p-4  ">
-        <img src={'/flutter1-9-23_18.gif'} width='100%' layout='fill'/>
+          <h1>Leaderboard: {leaderboardId}</h1>
 
+          {leaders && leaders.map((leader, index) => {
+            return <div className="bg-gray-100 dark:bg-gray-600 p-5 flex items-center h-[150px] cursor-pointer my-4 rounded-lg">
+                <div className="flex flex-col">
+                <p className="right text-base font-semibold my-0.5 text-gray-700 dark:text-white">
+                    <UserIcon src={leader.picture}/>
+                </p>
+                <p className="text-base font-semibold my-0.5 text-gray-700 dark:text-white">
+                    {leader.name}@handcash.io
+                </p>
+                <p className="text-gray-400 dark:text-gray-300 text-sm tracking-normal	text-left my-0.5">
+                    Score: {leader.score}
+                </p>
+                <p className="text-gray-400 dark:text-gray-300 text-sm tracking-normal	text-left my-0.5">
+                    Position: {leader.position}
+                </p>
+                </div>
+                <div className="grow" />
+                <div className="relative">
+
+                </div>
+                </div>
+            })}
 
           <div className="bg-gray-100 dark:bg-gray-600 p-5 flex flex-col cursor-pointer my-4 rounded-lg">
 
-            <p>Play ID: {router.query.play_id}</p>
+            <TuningPanel closeAction={leaderboardSelected} leaderboardId={leaderboardId}/>
           </div>
           {/* <div
             onClick={() => setWalletPopupOpen(true)}
@@ -153,10 +172,10 @@ export default function PlayGame() {
           </div> */}
 
           <button
-            onClick={donePlaying}
+            onClick={playNow}
             className="h-[52px] p-5 flex bg-red-500 text-white text-base font-semibold my-4 w-full border-none rounded-lg cursor-pointer items-center justify-center transition duration-500 transform hover:-translate-y-1 hover:bg-red-600"
           >
-            Done Playing
+            Play Now
           </button>
         </div>
         <div className="grow" />
