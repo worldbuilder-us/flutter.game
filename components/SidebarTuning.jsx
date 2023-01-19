@@ -11,10 +11,10 @@ const SidebarTuning = () => {
   return (
     <div className='bg-gray-100 dark:bg-gray-600 rounded-lg min-h-60'>
       <div className='flex items-center p-4'>
-        <p className='text-lg font-bold text-gray-900 dark:text-white'>Tuning Panel</p>
+        <p className='text-lg font-bold text-gray-900 dark:text-white'>Select Leaderboard & Price</p>
       </div>
       <div className='flex flex-col p-2'>
-        <TuningPanel closeAction={null}/>
+        <TuningPanel closeAction={() => { console.log('tuning panel closed') }}/>
       </div>
     </div>
   )

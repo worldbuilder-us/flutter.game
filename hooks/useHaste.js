@@ -20,12 +20,11 @@ export function useHaste() {
     }
 
     if (haste) {
-        console.log("haste client", haste)
+        
         setTokenDetails(haste.getTokenDetails())
 
-        console.log({tokenDetails})
-
         if (tokenDetails && tokenDetails.isAuthenticated) {
+            localStorage.setItem('hasteAuth', tokenDetails)
             setAuthenticated(true)
         }
     }

@@ -1,15 +1,30 @@
 import React from 'react'
-import { useEffect } from 'react'
+import { useState } from 'react'
 import { useTuning } from '../context/TuningContext'
+
+import axios from 'axios'
+
+import {useAPI} from '../hooks/useAPI'
 
 const TuningPanel = ({ closeAction }) => {
     const { filter, setFilter, zenMode, setZenMode } = useTuning()
 
+    const [leaderboard, setLeaderboard] = useState()
+
+    const { data, loading } = useAPI(`/haste/leaderboards`)
+
+    const leaderboards = data?.leaderboards
+
+    if (loading) { return <div>Loading Leaderboards...</div> }
+
     const handleChange = (e) => {
-      setFilter(e.target.value);
+
+      console.log('e.target.value', e.target.value)
+
+      setLeaderboard(e.target.value);
       if (closeAction !== null){
 
-        closeAction()     
+        closeAction({ leaderboard: e.target.value })
       }
       
     }
@@ -23,25 +38,14 @@ const TuningPanel = ({ closeAction }) => {
   return (
     <div className='flex flex-col'>
       <div className='flex items-center w-full'>
-          <label htmlFor="filter" className="text-sm font-medium text-gray-700 dark:text-gray-200">filter:</label>
-          <select value={filter} onChange={handleChange} id="filter" className="ml-3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block grow p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-          <option value="last-hour">Last Hour</option>
-          <option value="last-day">Last Day</option>
-          <option value="last-week">Last Week</option>
-          <option value="last-month">Last Month</option>
-          <option value="last-year">Last Year</option>
-          <option value="all-time">All</option>
+          <label htmlFor="filter" className="text-sm font-medium text-gray-700 dark:text-gray-200">Leaderboard:</label>
+          <select  onChange={handleChange} id="filter" className="ml-3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block grow p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+          {leaderboards.map((leaderboard) => {
+            return <option value={leaderboard.id}>{leaderboard.formattedCostString}</option>
+          })}
           </select>
       </div>
-      <div className='py-5 flex items-center w-full cursor-pointer'>
-          <label htmlFor="zenMode" className="text-sm font-medium text-gray-700 dark:text-gray-200">Zen Mode:</label>
-          <div className="relative ml-5">
-          <label className="inline-flex relative items-center cursor-pointer">
-          <input type="checkbox" onChange={toggleZen} value={zenMode} checked={zenMode} className="sr-only peer"/>
-          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none  rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-        </label>
-      </div>
-      </div>
+
     </div>
   )
 }

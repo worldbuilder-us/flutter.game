@@ -6,28 +6,6 @@ import { useRouter } from 'next/router'
 import { useHaste } from '../hooks/useHaste'
 
 const Index = () => {
-  const { startTimestamp } = useTuning();
-
-
-  const { query, push } = useRouter()
-
-  if (query.idToken) {
-    console.log('idToken', query.idToken)
-
-    //push('/')
-
-    localStorage.setItem('haste.idToken', query.idToken)
-
-  }
-
-  const haste = useHaste()
-
-  useEffect(() => {
-
-    window.haste = haste
-
-  }, [haste])
-
 
   return (
     <Dashboard

@@ -3,12 +3,11 @@ import Link from 'next/link';
 import { useTheme } from "next-themes";
 import { UserIcon } from '.';
 import { Drawer, WalletProviderPopUp } from '.';
-import { useRelay } from '../context/RelayContext';
 import { useBitcoin } from '../context/BitcoinContext';
 
 import { useHaste } from '../hooks/useHaste'
 
-import { HasteClient } from '@hastearcade/web'
+import { useRouter } from 'next/router';
 
 const SideBar = () => {
     const { theme, setTheme } = useTheme()
@@ -16,6 +15,8 @@ const SideBar = () => {
     const [walletPopupOpen, setWalletPopupOpen] = useState(false);
 
     const {haste, tokenDetails} = useHaste()
+
+    const { push } = useRouter()
 
     const authenticated = tokenDetails?.isAuthenticated
 
@@ -57,7 +58,7 @@ const SideBar = () => {
                 {/* </Link> */}
             </div>
             <div className='grow'/>
-            <div className='hidden xl:block'>
+            <div className='hidden xl:block' onClick={() => push('/settings')}>
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-500 hover:text-gray-700 hover:dark:text-gray-300 cursor-pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
                 </svg>

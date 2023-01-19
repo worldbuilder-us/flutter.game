@@ -68,7 +68,7 @@ export default function Features() {
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
-        theme: "light",
+        theme: "dark",
       }
     );
     console.log(resp);

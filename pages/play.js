@@ -18,9 +18,29 @@ export default function Settings() {
   const [isDark, setIsDark] = useState(theme === "dark");
   const [walletPopupOpen, setWalletPopupOpen] = useState(false);
 
-  const {haste, tokenDetails} = useHaste()
+  const {haste, tokenDetails, login} = useHaste()
+
+  const [leaderboards, setLeaderboards] = useState()
+
+  const [leaderboard, setLeaderboard] = useState()
+
+  function leaderboardSelected({leaderboard: leaderboard_id}) {
+
+    console.log('haste.leaderboardSelected', {leaderboard_id})
+
+    setLeaderboard(leaderboard_id)
+
+  }
 
   const authenticated = tokenDetails?.isAuthenticated
+
+  function playNow() {
+    console.log('play now clicked')
+
+    if (!authenticated) {
+      login()
+    }
+  }
 
   function logout() {
     console.log('logout clicked')
@@ -49,12 +69,11 @@ export default function Settings() {
     <PanelLayout>
       <div className="mx-auto max-w-xl col-span-12 lg:col-span-6 min-h-screen flex flex-col ">
         <div className="mt-7  p-4  ">
+        <img src={'flutter1-9-23_18.gif'} width='100%' layout='fill'/>
 
           <div className="bg-gray-100 dark:bg-gray-600 p-5 flex flex-col cursor-pointer my-4 rounded-lg">
-            <p className="text-base font-semibold mb-2 text-gray-700 dark:text-white">
-              Select Leaderboard & Price
-            </p>
-            <TuningPanel />
+
+            <TuningPanel closeAction={leaderboardSelected}/>
           </div>
           {/* <div
             onClick={() => setWalletPopupOpen(true)}
@@ -84,38 +103,12 @@ export default function Settings() {
               />
             </svg>
           </div> */}
-          <div className="bg-gray-100 dark:bg-gray-600 p-5 flex items-center h-[78px] cursor-pointer my-4 rounded-lg">
-            <div className="flex flex-col">
-              <p className="text-base font-semibold my-0.5 text-gray-700 dark:text-white">
-                Dark Mode
-              </p>
-              <p className="text-gray-400 dark:text-gray-300 text-sm tracking-normal	text-left my-0.5">
-                Toggle between dark and light mode
-              </p>
-            </div>
-            <div className="grow" />
-            <div className="relative">
-              <label className="flex items-center cursor-pointer">
-                <div className="relative">
-                  <input
-                    id="toggleTheme"
-                    type="checkbox"
-                    className="sr-only"
-                    checked={isDark}
-                    onChange={toggleTheme}
-                  />
-                  <div className="w-10 toggle h-4 bg-gray-400 rounded-full shadow-inner"></div>
-                  <div className="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
-                </div>
-              </label>
-            </div>
-          </div>
+
           <button
-            disabled={!authenticated}
-            onClick={logout}
+            onClick={playNow}
             className="h-[52px] p-5 flex bg-red-500 text-white text-base font-semibold my-4 w-full border-none rounded-lg cursor-pointer items-center justify-center transition duration-500 transform hover:-translate-y-1 hover:bg-red-600"
           >
-            Log out
+            Play Now
           </button>
         </div>
         <div className="grow" />
