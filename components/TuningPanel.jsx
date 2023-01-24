@@ -24,8 +24,10 @@ const TuningPanel = ({ closeAction, leaderboardId }) => {
         console.log('SET LEADERBOARD', data?.leaderboards[0].id)
 
         setLeaderboard(data?.leaderboards[0].id)
+        if (closeAction !== null && typeof closeAction === 'function'){
 
-        closeAction({ leaderboard: data?.leaderboards[0].id })
+          closeAction({ leaderboard: data?.leaderboards[0].idx })
+        }
       }
     }, [data])
 
@@ -37,7 +39,7 @@ const TuningPanel = ({ closeAction, leaderboardId }) => {
       console.log('e.target.value', e.target.value)
 
       setLeaderboard(e.target.value);
-      if (closeAction !== null){
+      if (closeAction !== null && typeof closeAction === 'function'){
 
         closeAction({ leaderboard: e.target.value })
       }
