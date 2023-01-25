@@ -19,6 +19,7 @@ import { useBitcoin } from "../context/BitcoinContext";
 import Image from 'next/image'
 
 import { useHaste } from "../hooks/useHaste";
+import loader from "../loader";
 
 function ago(period) {
   return moment().subtract(1, period).unix() * 1000;
@@ -64,7 +65,7 @@ const Dashboard = ({ error, loading }) => {
     <ThreeColumnLayout>
       <div className="col-span-12 lg:col-span-6 min-h-screen">
           <div className="hidden lg:block mt-8">
-            <img src={'flutter1-9-23_18.gif'} width='100%' layout='fill'/>
+            <Image loader={loader} src={'flutter1-9-23_18.gif'} width='100%' />
             <button onClick={playNow} className="h-[52px] p-5 flex bg-blue-500 text-white text-base font-semibold my-4 w-full border-none rounded-lg cursor-pointer items-center justify-center transition duration-500 transform hover:-translate-y-1 hover:bg-green-600">Play Now</button>
           </div>
         <div className="px-4 mt-2">

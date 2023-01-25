@@ -1,7 +1,8 @@
 import React, { useContext, useState, useEffect } from 'react'
 import Link from 'next/link'
 import { UserIcon } from '.'
-
+import Image from 'next/image'
+import loader from '../loader'
 
 const UserProfileCard = ({ me, numPosts, earned, itemsOwned, userProfileCard, isMe, followsMe, meFollows }) => {
 
@@ -9,7 +10,9 @@ const UserProfileCard = ({ me, numPosts, earned, itemsOwned, userProfileCard, is
     <div className="mt-2 max-w-screen">
         <div className="h-32 bg-gray-100 dark:bg-gray-600 w-full relative cursor-pointer overflow-hidden rounded-t-xl">
             <span className="box-border block overflow-hiden bg-none opacity-100 border-none m-0 p-0 absolute inset-0">
-            <img
+            <Image
+                alt="User Profile Banner"
+                loader={loader}
                 src={userProfileCard.banner}
                 decoding="async"
                 className="h-32 bg-gray-100 rounded-t-xl relative cursor-pointer overflow-hidden  inset-0 box-border p-0 border-none m-auto block w-0 min-h-full max-h-full min-w-full max-w-full object-cover	object-center"

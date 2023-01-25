@@ -1,45 +1,29 @@
-
 import React, { useContext, useEffect, useState } from "react";
-import Head from "next/head";
 import { useTheme } from "next-themes";
 import {
   Drawer,
   PanelLayout,
   ThreeColumnLayout,
   WalletProviderPopUp,
-} from "../../components";
-import { useRelay } from "../../context/RelayContext";
-import TuningPanel from "../../components/TuningPanel";
-import { useBitcoin } from "../../context/BitcoinContext";
-import { useHaste } from '../../hooks/useHaste'
-import { useRouter } from 'next/router'
-import { useAPI } from '../../hooks/useAPI'
+} from "../components";
+import { useRelay } from "../context/RelayContext";
+import TuningPanel from "../components/TuningPanel";
+import { useBitcoin } from "../context/BitcoinContext";
+import { useHaste } from '../hooks/useHaste'
+import loader from "../loader";
+import Image from "next/image";
 
-import axios from 'axios'
-
-function getRandomInt(max) {
-    return Math.floor(Math.random() * max);
-  }
-
-export default function PlayGame() {
+export default function Settings() {
   const { theme, setTheme } = useTheme();
   const { logout: logoutHaste } = useHaste();
   const [isDark, setIsDark] = useState(theme === "dark");
   const [walletPopupOpen, setWalletPopupOpen] = useState(false);
-
-  const router = useRouter()
 
   const {haste, tokenDetails, login} = useHaste()
 
   const [leaderboards, setLeaderboards] = useState()
 
   const [leaderboard, setLeaderboard] = useState()
-
-  const { data, loading } = useAPI(`/plays/${router.query.play_id}`)
-
-  const play = data?.play
-
-    console.log("--play--", play)
 
   function leaderboardSelected({leaderboard: leaderboard_id}) {
 
@@ -48,29 +32,15 @@ export default function PlayGame() {
     setLeaderboard(leaderboard_id)
 
   }
+  //@ts-ignore
+  const authenticated = !!tokenDetails ? tokenDetails.isAuthenticated : undefined
 
-  const authenticated = tokenDetails?.isAuthenticated
-
-  async function donePlaying() {
+  function playNow() {
     console.log('play now clicked')
 
     if (!authenticated) {
       login()
-      return
     }
-
-    //const { data } = await axios.post(`http://localhost:5200/api/v1/haste/scores`, {
-    const { data } = await axios.post(`https://fluttergame.fun/api/v1/haste/scores`, {
-      leaderboard_id: play?.leaderboardId,
-      handcash_token: tokenDetails.token,
-      play: play.data,
-      score: getRandomInt(1000)
-    })
-
-    console.log('haste.score.recorded', data)
-
-    router.push(`/leaderboards/${play.leaderboardId}`)
-
   }
 
   function logout() {
@@ -96,32 +66,15 @@ export default function PlayGame() {
     }
   };
 
-  if (loading) {
-    return (
-      <PanelLayout>
-        <div className="mx-auto max-w-xl col-span-12 lg:col-span-6 min-h-screen flex flex-col ">
-          <div className="mt-7  p-4  ">
-            <div className="bg-gray-100 dark:bg-gray-600 p-5 flex flex-col cursor-pointer my-4 rounded-lg">
-
-              <p>Loading...</p>
-
-            </div>
-          </div>
-        </div>
-      </PanelLayout>
-    )
-  }
-
   return (
     <PanelLayout>
       <div className="mx-auto max-w-xl col-span-12 lg:col-span-6 min-h-screen flex flex-col ">
         <div className="mt-7  p-4  ">
-        <img src={'/flutter1-9-23_18.gif'} width='100%' layout='fill'/>
-
+        <Image loader={loader} src={'flutter1-9-23_18.gif'} width='100%' layout='fill'/>
 
           <div className="bg-gray-100 dark:bg-gray-600 p-5 flex flex-col cursor-pointer my-4 rounded-lg">
 
-            <p>Play ID: {router.query.play_id}</p>
+            <TuningPanel closeAction={leaderboardSelected} leaderboardId={undefined}/>
           </div>
           {/* <div
             onClick={() => setWalletPopupOpen(true)}
@@ -153,10 +106,10 @@ export default function PlayGame() {
           </div> */}
 
           <button
-            onClick={donePlaying}
+            onClick={playNow}
             className="h-[52px] p-5 flex bg-red-500 text-white text-base font-semibold my-4 w-full border-none rounded-lg cursor-pointer items-center justify-center transition duration-500 transform hover:-translate-y-1 hover:bg-red-600"
           >
-            Done Playing
+            Play Now
           </button>
         </div>
         <div className="grow" />

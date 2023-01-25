@@ -116,7 +116,7 @@ export default function Settings() {
           <h1>Leaderboard: {leaderboardId}</h1>
 
           {leaders && leaders.map((leader, index) => {
-            return <div className="bg-gray-100 dark:bg-gray-600 p-5 flex items-center h-[150px] cursor-pointer my-4 rounded-lg">
+            return <div key={leader.id} className="bg-gray-100 dark:bg-gray-600 p-5 flex items-center h-[150px] cursor-pointer my-4 rounded-lg">
                 <div className="flex flex-col">
                 <p className="right text-base font-semibold my-0.5 text-gray-700 dark:text-white">
                     <UserIcon src={leader.picture}/>

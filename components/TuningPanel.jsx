@@ -2,8 +2,6 @@ import React from 'react'
 import { useState } from 'react'
 import { useTuning } from '../context/TuningContext'
 
-import axios from 'axios'
-
 import {useAPI} from '../hooks/useAPI'
 import { useEffect } from 'react'
 
@@ -29,7 +27,7 @@ const TuningPanel = ({ closeAction, leaderboardId }) => {
           closeAction({ leaderboard: data?.leaderboards[0].idx })
         }
       }
-    }, [data])
+    }, [data, closeAction, leaderboardId])
 
     if (loading) { return <div>Loading Leaderboards...</div> }
 
@@ -58,7 +56,7 @@ const TuningPanel = ({ closeAction, leaderboardId }) => {
           <label htmlFor="filter" className="text-sm font-medium text-gray-700 dark:text-gray-200">Leaderboard:</label>
           <select value={leaderboardId} onChange={handleChange} id="filter" className="ml-3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block grow p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
           {leaderboards.map((leaderboard) => {
-            return <option value={leaderboard.id}>{leaderboard.formattedCostString}</option>
+            return <option key={leadeboard.id} value={leaderboard.id}>{leaderboard.formattedCostString}</option>
           })}
           </select>
       </div>

@@ -1,19 +1,17 @@
 import React, { useContext, useEffect, useState } from "react";
-import Head from "next/head";
 import { useTheme } from "next-themes";
 import {
   Drawer,
   PanelLayout,
-  ThreeColumnLayout,
   WalletProviderPopUp,
 } from "../components";
-import { useRelay } from "../context/RelayContext";
 import TuningPanel from "../components/TuningPanel";
-import { useBitcoin } from "../context/BitcoinContext";
 import { useHaste } from '../hooks/useHaste'
 import { useRouter } from 'next/router'
 
 import axios from 'axios'
+import loader from "../loader";
+import Image from 'next/image'
 
 export default function Settings() {
   const { theme, setTheme } = useTheme();
@@ -38,6 +36,7 @@ export default function Settings() {
 
   }
 
+  //@ts-ignore
   const authenticated = tokenDetails?.isAuthenticated
 
   async function playNow() {
@@ -50,6 +49,7 @@ export default function Settings() {
 
     const { data } = await axios.post(`https://fluttergame.fun/api/v1/haste/plays`, {
       leaderboard_id: leaderboard,
+      //@ts-ignore
       handcash_token: tokenDetails.token
     })
 
@@ -86,11 +86,11 @@ export default function Settings() {
     <PanelLayout>
       <div className="mx-auto max-w-xl col-span-12 lg:col-span-6 min-h-screen flex flex-col ">
         <div className="mt-7  p-4  ">
-        <img src={'flutter1-9-23_18.gif'} width='100%' layout='fill'/>
+        <Image loader={loader} src={'flutter1-9-23_18.gif'} width='100%' layout='fill'/>
 
           <div className="bg-gray-100 dark:bg-gray-600 p-5 flex flex-col cursor-pointer my-4 rounded-lg">
 
-            <TuningPanel closeAction={leaderboardSelected}/>
+            <TuningPanel closeAction={leaderboardSelected} leaderboardId={undefined}/>
           </div>
           {/* <div
             onClick={() => setWalletPopupOpen(true)}

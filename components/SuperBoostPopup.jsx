@@ -13,18 +13,18 @@ const SuperBoostPopup = ({ contentTxId, onClose }) => {
     const [difficulty, setDifficulty] = useState(0.025)
     const [price,setPrice] = useState(0.05)
 
-    useEffect(()=>{
-        getPriceForDifficulty(difficulty).then((res)=>setPrice(res.toFixed(2)))
-    },[difficulty])
-
-    const getPriceForDifficulty = async (difficulty) => {
+    const getPriceForDifficulty = useCallback(async (difficulty) => {
 
         const resp = await axios.get(`https://pow.co/api/v1/boostpow/${contentTxId}/new?difficulty=${difficulty}`)
         const satoshis = resp?.data?.outputs[0]?.amount
         console.log(satoshis)
         let price = (satoshis/1e8) * exchangeRate / 2
         return price
-    }
+    }, [difficulty, contentTxId , exchangeRate])
+
+    useEffect(()=>{
+      getPriceForDifficulty(difficulty).then((res)=>setPrice(res.toFixed(2)))
+    },[difficulty])
 
     const boost = async () => {
       if (!authenticated){
