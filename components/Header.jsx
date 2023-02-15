@@ -18,6 +18,9 @@ const Header = () => {
   const {authenticated, haste, tokenDetails} = useHaste()
   const router = useRouter()
 
+  console.log("avatar is: ", avatar);
+  console.log("token details: ", tokenDetails);
+
   const openDrawer = (e) => {
     e.stopPropagation();
     setIsDrawerOpen(true)
@@ -36,7 +39,7 @@ const Header = () => {
         <div className="px-4 lg:px-7 h-[50px] lg:h-16 relative flex justify-between items-center">
           <div className="lg:hidden w-24 flex items-center">
             <div className='cursor-pointer' onClick={openDrawer}>
-              {tokenDetails && tokenDetails.isAuthenticated ? <UserIcon src={avatar} size={36} /> : 
+              {tokenDetails && tokenDetails.isAuthenticated ? <UserIcon src={tokenDetails.picture} size={36} /> : 
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
               </svg>}

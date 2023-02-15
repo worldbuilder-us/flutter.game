@@ -15,6 +15,7 @@ const UserIcon = (props) => {
                         alt="User Icon"
                         loader={loader}
                         src={props.src} 
+                        layout='fill'
                         className='absolute rounded-full inset-0 box-border p-0 border-none m-auto block w-0 h-0 min-w-full max-w-full min-h-full max-h-full'
                     />
                 </span>
